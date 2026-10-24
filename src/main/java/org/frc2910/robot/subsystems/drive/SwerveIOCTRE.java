@@ -119,6 +119,7 @@ public class SwerveIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> i
 
             StatusSignalRefresher.getInstance()
                     .addStatusSignals(
+                            driveMotor.getNetwork(),
                             driveSupplyCurrent,
                             driveStatorCurrent,
                             driveAppliedVolts,
@@ -139,7 +140,8 @@ public class SwerveIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> i
 
         BaseStatusSignal.setUpdateFrequencyForAll(250, angularYawVelocity, accelerationX, accelerationY, accelerationZ);
         StatusSignalRefresher.getInstance()
-                .addStatusSignals(angularYawVelocity, accelerationX, accelerationY, accelerationZ);
+                .addStatusSignals(
+                        getPigeon2().getNetwork(), angularYawVelocity, accelerationX, accelerationY, accelerationZ);
     }
 
     // --------------------------------------------------------------------------

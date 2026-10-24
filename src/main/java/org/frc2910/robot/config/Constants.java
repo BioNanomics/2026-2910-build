@@ -86,6 +86,7 @@ public class Constants {
     public static final double KRAKEN_X44_FREE_SPEED = 7368.0;
     public static final double KRAKEN_X60_FREE_SPEED = 5800.0;
     public static final String CANIVORE_BUS_NAME = "CANivore";
+    public static final String RIO_BUS_NAME = "rio";
 
     public static final String operatorDashboardName = "Operator Dashboard";
     public static final String debugDashboardName = "Debug Dashboard";

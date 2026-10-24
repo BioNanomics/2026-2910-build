@@ -5,6 +5,7 @@ import org.frc2910.robot.config.Constants;
 import org.frc2910.robot.subsystems.base.MotorIO;
 import org.frc2910.robot.subsystems.base.servo.ServoMotorSubsystem;
 import org.frc2910.robot.util.ConditionalCallbackManager;
+import org.frc2910.robot.util.SubsystemToggles;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -40,6 +41,10 @@ public class HoodSubsystem extends ServoMotorSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        if (!SubsystemToggles.HOOD.isEnabled()) {
+            setVoltageOutput(0.0);
+            return;
+        }
         systemState = handleStateTransition();
         Logger.recordOutput("Hood/WantedState", wantedState);
         Logger.recordOutput("Hood/SystemState", systemState);

@@ -5,6 +5,7 @@ import org.frc2910.robot.config.Constants;
 import org.frc2910.robot.subsystems.base.MotorIO;
 import org.frc2910.robot.subsystems.base.roller.RollerWithFollowersSubsystem;
 import org.frc2910.robot.util.ConditionalCallbackManager;
+import org.frc2910.robot.util.SubsystemToggles;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -34,6 +35,10 @@ public class FlywheelSubsystem extends RollerWithFollowersSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        if (!SubsystemToggles.FLYWHEEL.isEnabled()) {
+            setVoltageOutput(0.0);
+            return;
+        }
         systemState = handleStateTransitions();
         Logger.recordOutput("Flywheel/WantedState", wantedState);
         Logger.recordOutput("Flywheel/SystemState", systemState);

@@ -26,6 +26,7 @@ import org.frc2910.robot.config.Constants;
 import org.frc2910.robot.config.Constants.SystemCharacterizationConstants;
 import org.frc2910.robot.constants.FieldConstants;
 import org.frc2910.robot.util.ConditionalCallbackManager;
+import org.frc2910.robot.util.SubsystemToggles;
 import org.frc2910.robot.utils.simulation.MapleSimSwerveDrivetrain;
 import org.littletonrobotics.junction.Logger;
 
@@ -315,6 +316,12 @@ public class SwerveSubsystem extends SubsystemBase {
         io.updateModuleInputs(moduleInputs);
         /// Log module-specific telemetry (encoder angles, velocities, currents)
         io.logModules(inputs);
+
+        if (!SubsystemToggles.DRIVE.isEnabled()) {
+            io.setSwerveState(idleRequest);
+            lastTimestamp = Timer.getFPGATimestamp();
+            return;
+        }
 
         /// Determine current system state based on desired state
         systemState = handleStateTransition();

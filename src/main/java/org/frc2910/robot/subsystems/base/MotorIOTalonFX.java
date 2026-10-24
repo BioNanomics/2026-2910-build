@@ -82,6 +82,7 @@ public class MotorIOTalonFX implements MotorIO {
         callbackManager.registerOneTimeCallback(() -> {
             StatusSignalRefresher.getInstance()
                     .addStatusSignals(
+                            config.getTalonCANID().getBus(),
                             rawRotorPositionSignal,
                             voltageSignal,
                             currentStatorSignal,
@@ -92,7 +93,11 @@ public class MotorIOTalonFX implements MotorIO {
                             torqueCurrentSignal);
         });
         StatusSignalRefresher.getInstance()
-                .addStatusSignals(rotorVelocitySignal, rawMechanismPositionSignal, mechanismVelocitySignal);
+                .addStatusSignals(
+                        config.getTalonCANID().getBus(),
+                        rotorVelocitySignal,
+                        rawMechanismPositionSignal,
+                        mechanismVelocitySignal);
 
         // Set a default update frequency for all signals
 

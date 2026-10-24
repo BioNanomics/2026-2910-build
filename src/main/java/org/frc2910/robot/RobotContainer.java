@@ -64,6 +64,7 @@ public class RobotContainer {
         this.callbackManager = callbackManager;
         configuration = RobotConfiguration.getRobotConfiguration(RobotIdentity.get());
         robotState = new RobotState();
+        SubsystemToggles.init();
         // SwerveSubsystem needs to be built first so that it can update the robot pose
         // from CTRE's pose estimator before other subsystems run. While this isn't part
         // of the CommandScheduler contract, this is the scheduler behavior in 2026.

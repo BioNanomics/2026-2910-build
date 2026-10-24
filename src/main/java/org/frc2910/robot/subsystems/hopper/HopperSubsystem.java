@@ -5,6 +5,7 @@ import org.frc2910.robot.RobotState;
 import org.frc2910.robot.subsystems.base.MotorIO;
 import org.frc2910.robot.subsystems.base.roller.RollerMotorSubsystem;
 import org.frc2910.robot.util.ConditionalCallbackManager;
+import org.frc2910.robot.util.SubsystemToggles;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -66,6 +67,10 @@ public class HopperSubsystem extends RollerMotorSubsystem {
         hopperRangeIO.updateInputs(hopperRangeInputs);
         feederRangeIO.updateInputs(feederRangeInputs);
         isHopperFull = debouncer.calculate(hopperRangeInputs.isTripped);
+        if (!SubsystemToggles.HOPPER.isEnabled()) {
+            setHopperDutyCycle(0.0);
+            return;
+        }
         systemState = handleStateTransition();
         Logger.recordOutput("Feeder/WantedState", wantedState);
         Logger.recordOutput("Feeder/SystemState", systemState);

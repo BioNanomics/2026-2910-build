@@ -6,6 +6,7 @@ import org.frc2910.robot.subsystems.base.MotorIO;
 import org.frc2910.robot.subsystems.base.roller.RollerMotorSubsystem;
 import org.frc2910.robot.subsystems.base.servo.ServoMotorSubsystem;
 import org.frc2910.robot.util.ConditionalCallbackManager;
+import org.frc2910.robot.util.SubsystemToggles;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -62,6 +63,11 @@ public class IntakeSubsystem extends ServoMotorSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        if (!SubsystemToggles.INTAKE.isEnabled()) {
+            setVoltageOutput(0.0);
+            setRollerDutyCycle(0.0);
+            return;
+        }
         systemState = handleStateTransition();
         Logger.recordOutput(logKeyWantedState, wantedState);
         Logger.recordOutput(getLogKeySystemState, systemState);

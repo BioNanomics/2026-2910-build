@@ -30,7 +30,7 @@ public class CANRangeIO implements RangeIO {
         distance = range.getDistance();
 
         // Add all signals to the collection for easy refreshing in refreshData()
-        StatusSignalRefresher.getInstance().addStatusSignals(signalStrength, tripped, distance);
+        StatusSignalRefresher.getInstance().addStatusSignals(range.getNetwork(), signalStrength, tripped, distance);
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.frc2910.robot.subsystems.vision;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.frc2910.robot.RobotState;
+import org.frc2910.robot.util.SubsystemToggles;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class VisionSubsystem extends SubsystemBase {
             }
         }
 
+        if (!SubsystemToggles.VISION.isEnabled()) {
+            return;
+        }
         robotState.addVisionObservation(aprilTagObservations.toArray(RobotState.AprilTagObservation[]::new));
     }
 }

@@ -4,13 +4,13 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import org.frc2910.robot.Robot;
 import org.frc2910.robot.subsystems.base.roller.RollerMotorSubsystemConfig;
 import org.frc2910.robot.subsystems.base.roller.RollerWithFollowersSubsystemConfig;
 import org.frc2910.robot.subsystems.base.servo.ServoMotorSubsystemConfig;
@@ -22,9 +22,8 @@ import java.util.List;
 /**
  * Robot configuration implementation for the ReBlitz robot.
  *
- * <p>Contains all CAN device IDs, motor configurations, swerve module parameters,
- * and subsystem settings specific to the ReBlitz hardware.
- * </p>
+ * <p>Contains all CAN device IDs, motor configurations, swerve module parameters, and subsystem
+ * settings specific to the ReBlitz hardware.
  */
 @SuppressWarnings({"UnusedVariable", "UnusedPrivateField"})
 public class ReBlitz implements RobotConfiguration {
@@ -33,101 +32,103 @@ public class ReBlitz implements RobotConfiguration {
         CompBot
     */
 
-    private static final String CANIVORE_CANBUS_NAME = Robot.isSimulation() ? "*" : "CANivore";
+    // Swerve values below are taken from the Tuner X generated TunerConstants (advkit)
+    private static final String SWERVE_CANBUS_NAME = "CANivore";
 
-    private static final CanDeviceId GYRO = new CanDeviceId(1, CANIVORE_CANBUS_NAME);
+    private static final CanDeviceId GYRO = new CanDeviceId(5, SWERVE_CANBUS_NAME);
 
-    private static final double DRIVE_KP = 0.1;
-    private static final double DRIVE_KV = 0.126;
-    private static final double DRIVE_KS = 0.29019;
-    private static final double STEER_KP = 100.0;
-    private static final double STEER_KD = 0.0;
+    private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
+            .withKP(1.178)
+            .withKI(0)
+            .withKD(0)
+            .withKS(0.042)
+            .withKV(0.799)
+            .withKA(0.063);
+    private static final Slot0Configs STEER_GAINS = new Slot0Configs()
+            .withKP(100)
+            .withKI(0)
+            .withKD(0.5)
+            .withKS(0.1)
+            .withKV(2.49)
+            .withKA(0)
+            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
     // Swerve Modules
-    private static final CanDeviceId FRONT_LEFT_DRIVE_MOTOR = new CanDeviceId(7, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_LEFT_STEER_MOTOR = new CanDeviceId(8, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_LEFT_STEER_ENCODER = new CanDeviceId(4, CANIVORE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_LEFT_DRIVE_MOTOR = new CanDeviceId(7, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_LEFT_STEER_MOTOR = new CanDeviceId(8, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_LEFT_STEER_ENCODER = new CanDeviceId(2, SWERVE_CANBUS_NAME);
 
-    private static final CanDeviceId FRONT_RIGHT_DRIVE_MOTOR = new CanDeviceId(3, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_RIGHT_STEER_MOTOR = new CanDeviceId(4, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_RIGHT_STEER_ENCODER = new CanDeviceId(3, CANIVORE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_RIGHT_DRIVE_MOTOR = new CanDeviceId(3, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_RIGHT_STEER_MOTOR = new CanDeviceId(4, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_RIGHT_STEER_ENCODER = new CanDeviceId(3, SWERVE_CANBUS_NAME);
 
-    private static final CanDeviceId BACK_LEFT_DRIVE_MOTOR = new CanDeviceId(5, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId BACK_LEFT_STEER_MOTOR = new CanDeviceId(6, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId BACK_LEFT_STEER_ENCODER = new CanDeviceId(2, CANIVORE_CANBUS_NAME);
+    private static final CanDeviceId BACK_LEFT_DRIVE_MOTOR = new CanDeviceId(5, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_LEFT_STEER_MOTOR = new CanDeviceId(6, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_LEFT_STEER_ENCODER = new CanDeviceId(1, SWERVE_CANBUS_NAME);
 
-    private static final CanDeviceId BACK_RIGHT_DRIVE_MOTOR = new CanDeviceId(1, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId BACK_RIGHT_STEER_MOTOR = new CanDeviceId(2, CANIVORE_CANBUS_NAME);
-    private static final CanDeviceId BACK_RIGHT_STEER_ENCODER = new CanDeviceId(1, CANIVORE_CANBUS_NAME);
+    private static final CanDeviceId BACK_RIGHT_DRIVE_MOTOR = new CanDeviceId(1, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_RIGHT_STEER_MOTOR = new CanDeviceId(2, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_RIGHT_STEER_ENCODER = new CanDeviceId(4, SWERVE_CANBUS_NAME);
 
     /**
-     * Wheel radius in meters. Accuracy in these measurements affects wheel odometry
-     * which measures distance as a function of the number of rotations * wheel circumference.
+     * Wheel radius in meters. Accuracy in these measurements affects wheel odometry which measures
+     * distance as a function of the number of rotations * wheel circumference.
      */
     private static final double WHEEL_RADIUS_METERS = Units.inchesToMeters(2.0);
 
-    /**
-     * The number of teeth on the drive motor pinion gear.
-     */
+    /** The number of teeth on the drive motor pinion gear. */
     private static final double DRIVE_MOTOR_PINION_TEETH_COUNT = 12.0;
 
     /**
-     * The coupled gear ratio between the CanCoder and the drive motor.
-     * Every 1 rotation of the steer motor results in coupled ratio of drive turns.
-     * The first drive gear divided by the pinion gear
+     * The coupled gear ratio between the CanCoder and the drive motor. Every 1 rotation of the steer
+     * motor results in coupled ratio of drive turns. The first drive gear divided by the pinion gear
      */
     private static final double COUPLING_GEAR_RATIO = 54.0 / DRIVE_MOTOR_PINION_TEETH_COUNT;
 
     /**
-     * Ratio between the drive motor shaft and the output shaft the wheel is mounted on.
-     * Mark 4i L3 ratio
+     * Ratio between the drive motor shaft and the output shaft the wheel is mounted on. Mark 4i L3
+     * ratio
      */
     private static final double DRIVE_GEAR_RATIO = COUPLING_GEAR_RATIO * (25.0 / 32.0) * (30.0 / 15.0);
 
-    /**
-     * Ratio between the steer motor shaft and the steer output shaft.
-     * Mark 4i L3 ratio
-     */
+    /** Ratio between the steer motor shaft and the steer output shaft. Mark 4i L3 ratio */
     private static final double STEER_GEAR_RATIO = 287.0 / 11.0;
 
     /**
-     * Wheelbase length is the distance between the front and back wheels.
-     * Positive x values represent moving towards the front of the robot
+     * Wheelbase length is the distance between the front and back wheels. Positive x values represent
+     * moving towards the front of the robot
      */
     private static final double WHEELBASE_LENGTH_METERS = Units.inchesToMeters(22.25);
 
     /**
-     * Wheel track width is the distance between the left and right wheels.
-     * Positive y values represent moving towards the left of the robot.
+     * Wheel track width is the distance between the left and right wheels. Positive y values
+     * represent moving towards the left of the robot.
      */
     private static final double WHEELBASE_WIDTH_METERS = Units.inchesToMeters(21.75);
 
-    /**
-     * The maximum speed of the robot in meters per second.
-     */
+    /** The maximum speed of the robot in meters per second. */
     @SuppressWarnings("unused")
     private static final double THEORETICAL_MAX_SPEED_METERS_PER_SECOND =
             6000.0 / 60.0 / DRIVE_GEAR_RATIO * WHEEL_RADIUS_METERS * 2 * Math.PI;
 
     // TODO: adjust max speed
     // This was observed via AdvantageScoped
-    private static final double MAX_SPEED_METERS_PER_SECOND = 4.96;
+    private static final double MAX_SPEED_METERS_PER_SECOND = 4.39;
 
     /**
-     * The maximum angular speed of the robot in radians per second.
-     * If set to 0, the value is calculated using the max speed in meters per second
-     * and the wheelbase radius.
+     * The maximum angular speed of the robot in radians per second. If set to 0, the value is
+     * calculated using the max speed in meters per second and the wheelbase radius.
      */
 
     // CANcoder offsets of the swerve modules - bevel gears pointing left of the robot
-    private static final double FRONT_LEFT_STEER_OFFSET_ROTATIONS = -0.000244140625;
+    private static final double FRONT_LEFT_STEER_OFFSET_ROTATIONS = -0.38330078125;
 
-    private static final double FRONT_RIGHT_STEER_OFFSET_ROTATIONS = 0.191650390625;
-    private static final double BACK_LEFT_STEER_OFFSET_ROTATIONS = -0.1455078125;
-    private static final double BACK_RIGHT_STEER_OFFSET_ROTATIONS = 0.32861328125;
+    private static final double FRONT_RIGHT_STEER_OFFSET_ROTATIONS = -0.1787109375;
+    private static final double BACK_LEFT_STEER_OFFSET_ROTATIONS = -0.478271484375;
+    private static final double BACK_RIGHT_STEER_OFFSET_ROTATIONS = -0.115234375;
 
-    private static final double GYRO_MOUNTING_ANGLE = -90.0;
-    private static final double GYRO_DEGREES_OFF_PER_ROTATION = 1.15;
+    private static final boolean INVERT_LEFT_SIDE = false;
+    private static final boolean INVERT_RIGHT_SIDE = true;
 
     private final SwerveDrivetrainConstants swerveDrivetrainConstants;
     private final SwerveModuleConstants[] moduleConstants;
@@ -145,7 +146,7 @@ public class ReBlitz implements RobotConfiguration {
         intakeConfiguration = new IntakeConfiguration(
                 new ServoMotorSubsystemConfig(
                         "IntakeDeploy", // TODO change all names to use slash directory when possible
-                        new CanDeviceId(14, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(14, Constants.RIO_BUS_NAME),
                         "Degrees",
                         ServoMotorSubsystemConfig.createMotorConfiguration(
                                         Constants.IntakeConstants.INTAKE_GEAR_RATIO_WITH_UNIT_CONVERSIONS,
@@ -169,7 +170,7 @@ public class ReBlitz implements RobotConfiguration {
                                         .withSupplyCurrentLimitEnable(true))),
                 new RollerMotorSubsystemConfig(
                         "IntakeRightRoller",
-                        new CanDeviceId(15, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(15, Constants.RIO_BUS_NAME),
                         "Rotations",
                         RollerMotorSubsystemConfig.createMotorConfiguration(1.0)
                                 .withCurrentLimits(new CurrentLimitsConfigs()
@@ -183,7 +184,7 @@ public class ReBlitz implements RobotConfiguration {
                                         .withInverted(InvertedValue.CounterClockwise_Positive))),
                 new RollerMotorSubsystemConfig(
                         "IntakeLeftRoller",
-                        new CanDeviceId(16, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(16, Constants.RIO_BUS_NAME),
                         "Rotations",
                         RollerMotorSubsystemConfig.createMotorConfiguration(1.0)
                                 .withCurrentLimits(new CurrentLimitsConfigs()
@@ -220,14 +221,11 @@ public class ReBlitz implements RobotConfiguration {
                         .withNeutralMode(NeutralModeValue.Coast));
 
         RollerWithFollowersSubsystemConfig leaderShooterMotor = new RollerWithFollowersSubsystemConfig(
-                "ShooterLeaderTopLeft",
-                new CanDeviceId(9, Constants.CANIVORE_BUS_NAME),
-                "Rotations",
-                shooterLeftConfigs);
+                "ShooterLeaderTopLeft", new CanDeviceId(9, Constants.RIO_BUS_NAME), "Rotations", shooterLeftConfigs);
         leaderShooterMotor.addFollowerConfig(leaderShooterMotor
         .new FollowerConfig(
                 "ShooterBottomLeft",
-                new CanDeviceId(10, Constants.CANIVORE_BUS_NAME),
+                new CanDeviceId(10, Constants.RIO_BUS_NAME),
                 "Rotations",
                 shooterLeftConfigs,
                 MotorAlignmentValue.Aligned));
@@ -235,7 +233,7 @@ public class ReBlitz implements RobotConfiguration {
         leaderShooterMotor.addFollowerConfig(leaderShooterMotor
         .new FollowerConfig(
                 "ShooterTopRight",
-                new CanDeviceId(11, Constants.CANIVORE_BUS_NAME),
+                new CanDeviceId(11, Constants.RIO_BUS_NAME),
                 "Rotations",
                 shooterRightConfigs,
                 MotorAlignmentValue.Opposed));
@@ -243,7 +241,7 @@ public class ReBlitz implements RobotConfiguration {
         leaderShooterMotor.addFollowerConfig(leaderShooterMotor
         .new FollowerConfig(
                 "ShooterBottomRight",
-                new CanDeviceId(12, Constants.CANIVORE_BUS_NAME),
+                new CanDeviceId(12, Constants.RIO_BUS_NAME),
                 "Rotations",
                 shooterRightConfigs,
                 MotorAlignmentValue.Opposed));
@@ -252,7 +250,7 @@ public class ReBlitz implements RobotConfiguration {
                 leaderShooterMotor,
                 new ServoMotorSubsystemConfig(
                         "HoodMotor",
-                        new CanDeviceId(13, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(13, Constants.RIO_BUS_NAME),
                         "Degrees",
                         ServoMotorSubsystemConfig.createMotorConfiguration(
                                         Constants.ShooterConstants.HOOD_GEAR_RATIO_WITH_UNIT_CONVERSIONS,
@@ -298,28 +296,28 @@ public class ReBlitz implements RobotConfiguration {
         hopperConfiguration = new HopperConfiguration(
                 new RollerMotorSubsystemConfig(
                         "HopperFrontLeftMotor",
-                        new CanDeviceId(17, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(17, Constants.RIO_BUS_NAME),
                         "Rotations",
                         leftHopperMotorConfiguration),
                 new RollerMotorSubsystemConfig(
                         "HopperFrontRightMotor",
-                        new CanDeviceId(21, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(21, Constants.RIO_BUS_NAME),
                         "Rotations",
                         rightHopperMotorConfiguration),
                 new RollerMotorSubsystemConfig(
                         "HopperBackRightMotor",
-                        new CanDeviceId(22, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(22, Constants.RIO_BUS_NAME),
                         "Rotations",
                         rightHopperMotorConfiguration),
                 new RollerMotorSubsystemConfig(
                         "HopperBackLeftMotor",
-                        new CanDeviceId(23, Constants.CANIVORE_BUS_NAME),
+                        new CanDeviceId(23, Constants.RIO_BUS_NAME),
                         "Rotations",
                         leftHopperMotorConfiguration));
 
         hopperRangeConfiguration = new RangeConfiguration(
                 "HopperRange",
-                new CanDeviceId(0, CANIVORE_CANBUS_NAME),
+                new CanDeviceId(0, Constants.RIO_BUS_NAME),
                 new CANrangeConfiguration()
                         .withProximityParams(new ProximityParamsConfigs()
                                 .withProximityHysteresis(0.01)
@@ -328,7 +326,7 @@ public class ReBlitz implements RobotConfiguration {
 
         feederRangeConfiguration = new RangeConfiguration(
                 "FeederRange",
-                new CanDeviceId(1, CANIVORE_CANBUS_NAME),
+                new CanDeviceId(1, Constants.RIO_BUS_NAME),
                 new CANrangeConfiguration()
                         .withProximityParams(new ProximityParamsConfigs()
                                 .withProximityHysteresis(0.01)
@@ -336,14 +334,11 @@ public class ReBlitz implements RobotConfiguration {
                                 .withMinSignalStrengthForValidMeasurement(3500)));
         // endregion
 
-        Pigeon2Configuration pigeon2Configuration = new Pigeon2Configuration();
-        pigeon2Configuration.MountPose.MountPoseYaw = GYRO_MOUNTING_ANGLE;
-        pigeon2Configuration.GyroTrim.GyroScalarZ = GYRO_DEGREES_OFF_PER_ROTATION;
-
+        // Tuner X leaves Pigeon 2 configs null, so whatever is already on the device is kept
         swerveDrivetrainConstants = new SwerveDrivetrainConstants()
                 .withCANBusName(GYRO.getBusName())
                 .withPigeon2Id(GYRO.getDeviceNumber())
-                .withPigeon2Configs(pigeon2Configuration);
+                .withPigeon2Configs(null);
 
         // Slip current determines stator limits
         var driveConfigs = new TalonFXConfiguration();
@@ -403,7 +398,7 @@ public class ReBlitz implements RobotConfiguration {
                 .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
                 .withSteerMotorGearRatio(STEER_GEAR_RATIO)
                 .withCouplingGearRatio(COUPLING_GEAR_RATIO)
-                .withDriveMotorInverted(true)
+                .withDriveMotorInverted(INVERT_LEFT_SIDE)
                 .withSteerMotorInverted(false)
                 .withEncoderInverted(false)
                 .withEncoderOffset(FRONT_LEFT_STEER_OFFSET_ROTATIONS)
@@ -411,16 +406,16 @@ public class ReBlitz implements RobotConfiguration {
                 .withLocationY(WHEELBASE_WIDTH_METERS / 2)
                 .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
                 .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
-                .withDriveMotorGains(new ConfigureSlot0Gains(DRIVE_KP, 0, 0, DRIVE_KV, DRIVE_KS))
-                .withSteerMotorGains(new ConfigureSlot0Gains(STEER_KP, 0.0, STEER_KD, 0.0, 0.0))
+                .withDriveMotorGains(DRIVE_GAINS)
+                .withSteerMotorGains(STEER_GAINS)
                 .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
                 .withSteerMotorType(SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated)
                 .withDriveMotorInitialConfigs(driveConfigs)
                 .withSteerMotorInitialConfigs(steerConfigs)
                 .withEncoderInitialConfigs(new CANcoderConfiguration())
-                .withDriveFrictionVoltage(0.25)
+                .withDriveFrictionVoltage(0.2)
                 .withSteerFrictionVoltage(0.2)
-                .withDriveInertia(0.01)
+                .withDriveInertia(0.035)
                 .withSteerInertia(0.01)
                 .withSlipCurrent(100.0)
                 .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
@@ -435,7 +430,7 @@ public class ReBlitz implements RobotConfiguration {
                 .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
                 .withSteerMotorGearRatio(STEER_GEAR_RATIO)
                 .withCouplingGearRatio(COUPLING_GEAR_RATIO)
-                .withDriveMotorInverted(true)
+                .withDriveMotorInverted(INVERT_RIGHT_SIDE)
                 .withSteerMotorInverted(false)
                 .withEncoderInverted(false)
                 .withEncoderOffset(FRONT_RIGHT_STEER_OFFSET_ROTATIONS)
@@ -443,16 +438,16 @@ public class ReBlitz implements RobotConfiguration {
                 .withLocationY(-WHEELBASE_WIDTH_METERS / 2)
                 .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
                 .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
-                .withDriveMotorGains(new ConfigureSlot0Gains(DRIVE_KP, 0, 0, DRIVE_KV, DRIVE_KS))
-                .withSteerMotorGains(new ConfigureSlot0Gains(STEER_KP, 0.0, STEER_KD, 0.0, 0.0))
+                .withDriveMotorGains(DRIVE_GAINS)
+                .withSteerMotorGains(STEER_GAINS)
                 .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
                 .withSteerMotorType(SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated)
                 .withDriveMotorInitialConfigs(driveConfigs)
                 .withSteerMotorInitialConfigs(steerConfigs)
                 .withEncoderInitialConfigs(new CANcoderConfiguration())
-                .withDriveFrictionVoltage(0.25)
+                .withDriveFrictionVoltage(0.2)
                 .withSteerFrictionVoltage(0.2)
-                .withDriveInertia(0.01)
+                .withDriveInertia(0.035)
                 .withSteerInertia(0.01)
                 .withSlipCurrent(100.0)
                 .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
@@ -467,7 +462,7 @@ public class ReBlitz implements RobotConfiguration {
                 .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
                 .withSteerMotorGearRatio(STEER_GEAR_RATIO)
                 .withCouplingGearRatio(COUPLING_GEAR_RATIO)
-                .withDriveMotorInverted(true)
+                .withDriveMotorInverted(INVERT_LEFT_SIDE)
                 .withSteerMotorInverted(false)
                 .withEncoderInverted(false)
                 .withEncoderOffset(BACK_LEFT_STEER_OFFSET_ROTATIONS)
@@ -475,16 +470,16 @@ public class ReBlitz implements RobotConfiguration {
                 .withLocationY(WHEELBASE_WIDTH_METERS / 2)
                 .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
                 .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
-                .withDriveMotorGains(new ConfigureSlot0Gains(DRIVE_KP, 0, 0, DRIVE_KV, DRIVE_KS))
-                .withSteerMotorGains(new ConfigureSlot0Gains(STEER_KP, 0.0, STEER_KD, 0.0, 0.0))
+                .withDriveMotorGains(DRIVE_GAINS)
+                .withSteerMotorGains(STEER_GAINS)
                 .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
                 .withSteerMotorType(SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated)
                 .withDriveMotorInitialConfigs(driveConfigs)
                 .withSteerMotorInitialConfigs(steerConfigs)
                 .withEncoderInitialConfigs(new CANcoderConfiguration())
-                .withDriveFrictionVoltage(0.25)
+                .withDriveFrictionVoltage(0.2)
                 .withSteerFrictionVoltage(0.2)
-                .withDriveInertia(0.01)
+                .withDriveInertia(0.035)
                 .withSteerInertia(0.01)
                 .withSlipCurrent(100.0)
                 .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
@@ -499,7 +494,7 @@ public class ReBlitz implements RobotConfiguration {
                 .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
                 .withSteerMotorGearRatio(STEER_GEAR_RATIO)
                 .withCouplingGearRatio(COUPLING_GEAR_RATIO)
-                .withDriveMotorInverted(true)
+                .withDriveMotorInverted(INVERT_RIGHT_SIDE)
                 .withSteerMotorInverted(false)
                 .withEncoderInverted(false)
                 .withEncoderOffset(BACK_RIGHT_STEER_OFFSET_ROTATIONS)
@@ -507,16 +502,16 @@ public class ReBlitz implements RobotConfiguration {
                 .withLocationY(-WHEELBASE_WIDTH_METERS / 2)
                 .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
                 .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
-                .withDriveMotorGains(new ConfigureSlot0Gains(DRIVE_KP, 0, 0, DRIVE_KV, DRIVE_KS))
-                .withSteerMotorGains(new ConfigureSlot0Gains(STEER_KP, 0.0, STEER_KD, 0.0, 0.0))
+                .withDriveMotorGains(DRIVE_GAINS)
+                .withSteerMotorGains(STEER_GAINS)
                 .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
                 .withSteerMotorType(SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated)
                 .withDriveMotorInitialConfigs(driveConfigs)
                 .withSteerMotorInitialConfigs(steerConfigs)
                 .withEncoderInitialConfigs(new CANcoderConfiguration())
-                .withDriveFrictionVoltage(0.25)
+                .withDriveFrictionVoltage(0.2)
                 .withSteerFrictionVoltage(0.2)
-                .withDriveInertia(0.01)
+                .withDriveInertia(0.035)
                 .withSteerInertia(0.01)
                 .withSlipCurrent(100.0)
                 .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
