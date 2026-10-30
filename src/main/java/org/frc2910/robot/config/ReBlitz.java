@@ -54,21 +54,22 @@ public class ReBlitz implements RobotConfiguration {
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
     // Swerve Modules
-    private static final CanDeviceId FRONT_LEFT_DRIVE_MOTOR = new CanDeviceId(7, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_LEFT_STEER_MOTOR = new CanDeviceId(8, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_LEFT_STEER_ENCODER = new CanDeviceId(2, SWERVE_CANBUS_NAME);
+    // Robot front was flipped 180 degrees, so each module moved to its diagonally opposite slot
+    private static final CanDeviceId FRONT_LEFT_DRIVE_MOTOR = new CanDeviceId(1, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_LEFT_STEER_MOTOR = new CanDeviceId(2, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_LEFT_STEER_ENCODER = new CanDeviceId(4, SWERVE_CANBUS_NAME);
 
-    private static final CanDeviceId FRONT_RIGHT_DRIVE_MOTOR = new CanDeviceId(3, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_RIGHT_STEER_MOTOR = new CanDeviceId(4, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId FRONT_RIGHT_STEER_ENCODER = new CanDeviceId(3, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_RIGHT_DRIVE_MOTOR = new CanDeviceId(5, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_RIGHT_STEER_MOTOR = new CanDeviceId(6, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId FRONT_RIGHT_STEER_ENCODER = new CanDeviceId(1, SWERVE_CANBUS_NAME);
 
-    private static final CanDeviceId BACK_LEFT_DRIVE_MOTOR = new CanDeviceId(5, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId BACK_LEFT_STEER_MOTOR = new CanDeviceId(6, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId BACK_LEFT_STEER_ENCODER = new CanDeviceId(1, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_LEFT_DRIVE_MOTOR = new CanDeviceId(3, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_LEFT_STEER_MOTOR = new CanDeviceId(4, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_LEFT_STEER_ENCODER = new CanDeviceId(3, SWERVE_CANBUS_NAME);
 
-    private static final CanDeviceId BACK_RIGHT_DRIVE_MOTOR = new CanDeviceId(1, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId BACK_RIGHT_STEER_MOTOR = new CanDeviceId(2, SWERVE_CANBUS_NAME);
-    private static final CanDeviceId BACK_RIGHT_STEER_ENCODER = new CanDeviceId(4, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_RIGHT_DRIVE_MOTOR = new CanDeviceId(7, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_RIGHT_STEER_MOTOR = new CanDeviceId(8, SWERVE_CANBUS_NAME);
+    private static final CanDeviceId BACK_RIGHT_STEER_ENCODER = new CanDeviceId(2, SWERVE_CANBUS_NAME);
 
     /**
      * Wheel radius in meters. Accuracy in these measurements affects wheel odometry which measures
@@ -121,11 +122,13 @@ public class ReBlitz implements RobotConfiguration {
      */
 
     // CANcoder offsets of the swerve modules - bevel gears pointing left of the robot
-    private static final double FRONT_LEFT_STEER_OFFSET_ROTATIONS = -0.38330078125;
+    // Carried over unchanged from each module's old (diagonally opposite) slot. Moving to the other side flips the
+    // drive inversion, which already accounts for the 180 degree flip.
+    private static final double FRONT_LEFT_STEER_OFFSET_ROTATIONS = -0.115234375;
 
-    private static final double FRONT_RIGHT_STEER_OFFSET_ROTATIONS = -0.1787109375;
-    private static final double BACK_LEFT_STEER_OFFSET_ROTATIONS = -0.478271484375;
-    private static final double BACK_RIGHT_STEER_OFFSET_ROTATIONS = -0.115234375;
+    private static final double FRONT_RIGHT_STEER_OFFSET_ROTATIONS = -0.478271484375;
+    private static final double BACK_LEFT_STEER_OFFSET_ROTATIONS = -0.1787109375;
+    private static final double BACK_RIGHT_STEER_OFFSET_ROTATIONS = -0.38330078125;
 
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
